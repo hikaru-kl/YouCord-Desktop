@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="./src/assets/youcord-logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouCord</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    />
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+  </head>
+  <body class="overflow-hidden">
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
