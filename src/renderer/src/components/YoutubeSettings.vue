@@ -1,25 +1,25 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
+const emit = defineEmits(['add-tooltip-button', 'add-tooltip-content'])
 import profileImg from '../assets/youtube-user-preview.png'
 import rickImg from '../assets/rick.jpg'
-const emit = defineEmits(['add-tooltip-button', 'add-tooltip-content'])
-
 import { convertTimeYTformat, ytFormatToTimestamp } from '../utils.js'
 
 let time = 0
 let youtube_time = ref('0:00')
 
-setInterval(() => {
+const timer = setInterval(() => {
   time++
   if (time <= ytFormatToTimestamp('3:32') / 1000) youtube_time.value = convertTimeYTformat(time)
+  else clearInterval(timer)
 }, 1000)
 
-let config = {
+let config = reactive({
   title: true,
   author: true,
   duration: true,
   link: true
-}
+})
 const saveChanges = () => {
   window.electron.ipcRenderer.send('changeParams', { service: 'youtube', config })
 }
@@ -38,9 +38,7 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
         <ul
           class="w-48 text-sm font-medium border rounded-lg bg-[#333538] border-gray-600 text-white"
         >
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="vtitle-checkbox"
@@ -53,8 +51,9 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
               <label
                 for="vtitle-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Заголовок видео (при наводке на иконку)</label
               >
+                Заголовок видео
+              </label>
             </div>
           </li>
           <li
@@ -69,17 +68,14 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              />
+              >
               <label
                 for="vauthor-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Автор видео</label
-              >
+              >Автор видео</label>
             </div>
           </li>
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="vduration-checkbox"
@@ -89,17 +85,15 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              />
+              >
               <label
                 for="vduration-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Длительность просмотра</label
               >
+                Длительность просмотра</label>
             </div>
           </li>
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="vlink-checkbox"
@@ -109,10 +103,13 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              />
-              <label for="vlink-checkbox" class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Ссылка на видео</label
               >
+              <label
+                for="vlink-checkbox"
+                class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
+              >
+                Ссылка на видео
+              </label>
             </div>
           </li>
         </ul>
@@ -155,7 +152,8 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                       src="../assets/youtube-preview.png"
                       alt="BTMC Reacts to “a long overdue lazer update”"
                       style="max-width: 60px; min-height: 60px; border-radius: inherit"
-                  /></foreignObject>
+                    >
+                  </foreignObject>
                 </svg>
                 <div
                   v-show="config.title"
@@ -201,6 +199,7 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                   Watching YouTube video
                 </div>
                 <div
+                  v-show="config.title"
                   class="text-[12px] text-[#535464] whitespace-nowrap overflow-ellipsis overflow-hidden relative"
                   data-text-variant="text-xs/normal"
                   style="color: var(--text-normal)"

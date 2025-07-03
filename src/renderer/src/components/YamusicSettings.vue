@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { convertTimeYTformat, ytFormatToTimestamp } from '../utils.js'
 import youcordImg from '../assets/youcord-logo.png'
 import albumImg from '../assets/rockstar.jpg'
@@ -8,14 +8,14 @@ const emit = defineEmits(['add-tooltip-button', 'add-tooltip-content'])
 
 const path = ref('')
 
-let config = {
+let config = reactive({
   title: true,
   author: true,
   duration: true,
   link: true,
   image: true,
   app_path: path.value
-}
+})
 
 const saveChanges = () => {
   window.electron.ipcRenderer.send('changeParams', { service: 'yamusic', config })
@@ -30,9 +30,10 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
 })
 let time = 0
 let yamusic_time = ref('0:00')
-setInterval(() => {
+const timer = setInterval(() => {
   time++
   if (time <= ytFormatToTimestamp('03:14') / 1000) yamusic_time.value = convertTimeYTformat(time)
+  else clearInterval(timer)
 }, 1000)
 </script>
 
@@ -80,7 +81,8 @@ setInterval(() => {
                           :src="config.image ? albumImg : youcordImg"
                           alt="BTMC Reacts to “a long overdue lazer update”"
                           style="max-width: 60px; min-height: 60px; border-radius: inherit"
-                      /></foreignObject>
+                        />
+                      </foreignObject>
                     </svg>
                     <div
                       :ref="(el) => emit('add-tooltip-content', el)"
@@ -170,9 +172,7 @@ setInterval(() => {
         <ul
           class="w-48 text-sm font-medium border rounded-lg bg-[#333538] border-gray-600 text-white"
         >
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="trtitle-checkbox"
@@ -185,8 +185,9 @@ setInterval(() => {
               <label
                 for="trtitle-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Название трека</label
               >
+                Название трека
+              </label>
             </div>
           </li>
           <li
@@ -205,13 +206,12 @@ setInterval(() => {
               <label
                 for="trartist-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Исполнитель</label
               >
+                Исполнитель
+              </label>
             </div>
           </li>
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="trtime-checkbox"
@@ -225,12 +225,13 @@ setInterval(() => {
               <label
                 for="trtime-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Время прослушивания</label
               >
+                Время прослушивания
+              </label>
             </div>
           </li>
           <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] bg-[#303235] transition-all rounded-lg"
+            class="w-full border-gray-600 hover:bg-[#2c2d30] bg-[#303235] transition-all rounded-lg"
           >
             <div class="flex items-center ps-3">
               <input
@@ -244,14 +245,14 @@ setInterval(() => {
               />
               <label
                 for="trlink-checkbox"
+                title="Появится в YouCord Beta1.0"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-400"
-                >Ссылка на трек</label
               >
+                Ссылка на трек
+              </label>
             </div>
           </li>
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="trimage-checkbox"
@@ -265,14 +266,15 @@ setInterval(() => {
               <label
                 for="trimage-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Обложка трека</label
               >
+                Обложка трека
+              </label>
             </div>
           </li>
         </ul>
       </div>
       <div class="flex flex-col gap-1">
-        <label for="yamusicpath">Введите путь до .exe файла Яндекс Музыки</label>
+        <label for="yamusicpath">Введите путь до .exe файла Яндекс Музыки (без кавычек)</label>
         <input
           id="yamusicpath"
           v-model="config.app_path"

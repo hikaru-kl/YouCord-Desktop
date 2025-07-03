@@ -6,7 +6,23 @@ module.exports = {
     './node_modules/flowbite/**/*.js'
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        shake: {
+          '0%, 100%': { transform: 'translateX(0) translateY(0)' },
+          '20%, 60%': { transform: 'translateX(-2px) translateY(-2px)' },
+          '40%, 80%': { transform: 'translateX(2px) translateY(1px)' }
+        },
+        sparkle: {
+          '0%': { opacity: '1', transform: 'translate(0, 0) scale(1)' },
+          '100%': { opacity: '0', transform: 'translate(var(--x), var(--y)) scale(0.5)' }
+        }
+      },
+      animation: {
+        shake: 'shake 0.5s',
+        sparkle: 'sparkle 500ms ease-out forwards'
+      }
+    },
     fontFamily: {
       code: [
         'gg mono',

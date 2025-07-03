@@ -1,10 +1,10 @@
 {
   "name": "youcord-desktop",
-  "version": "1.0.0",
-  "description": "An Electron application with Vue",
-  "main": "./dist/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "version": "1.0.0-pre.1",
+  "description": "Stream your currently playing track from Spotify, Yandex Music (including lyrics), or your current YouTube video directly to your Discord Rich Presence.",
+  "main": "dist/main/index.js",
+  "author": "hikaru_kl",
+  "homepage": "https://hikaru-kl.ru",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -26,11 +26,13 @@
     "auto-launch": "^5.0.6",
     "axios": "^1.7.7",
     "cookie-parser": "^1.4.7",
+    "dayjs": "^1.11.13",
     "discord-rpc": "^4.0.1",
     "electron-squirrel-startup": "^1.0.1",
     "express": "^4.21.1",
     "flowbite": "^2.5.1",
     "node-fetch": "^3.3.2",
+    "otplib": "^12.0.1",
     "request": "^2.88.2"
   },
   "devDependencies": {
@@ -48,6 +50,7 @@
     "@vue/eslint-config-prettier": "^9.0.0",
     "autoprefixer": "^10.4.20",
     "electron": "^31.0.2",
+    "electron-builder": "^26.0.12",
     "electron-vite": "^2.3.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.26.0",

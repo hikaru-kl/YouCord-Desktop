@@ -10,9 +10,15 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
+    build: {
+      outDir: 'dist/preload'
+    },
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
+    build: {
+      outDir: 'dist/renderer'
+    },
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src')

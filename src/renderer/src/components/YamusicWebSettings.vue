@@ -1,16 +1,16 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 const emit = defineEmits(['add-tooltip-button', 'add-tooltip-content'])
 
 import { convertTimeYTformat, ytFormatToTimestamp } from '../utils.js'
 
-let config = {
+let config = reactive({
   title: true,
   author: true,
   duration: true,
   link: true,
   image: true
-}
+})
 
 const saveChanges = () => {
   window.electron.ipcRenderer.send('changeParams', { service: 'yamusic', config })
@@ -21,9 +21,10 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
 })
 let time = 0
 let yamusic_time = ref('0:00')
-setInterval(() => {
+const timer = setInterval(() => {
   time++
   if (time <= ytFormatToTimestamp('03:14') / 1000) yamusic_time.value = convertTimeYTformat(time)
+  else clearInterval(timer)
 }, 1000)
 </script>
 
@@ -39,9 +40,7 @@ setInterval(() => {
         <ul
           class="w-48 text-sm font-medium border rounded-lg bg-[#333538] border-gray-600 text-white"
         >
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="wtrtitle-checkbox"
@@ -54,8 +53,9 @@ setInterval(() => {
               <label
                 for="wtrtitle-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Название трека</label
               >
+                Название трека
+              </label>
             </div>
           </li>
           <li
@@ -74,13 +74,12 @@ setInterval(() => {
               <label
                 for="wtrartist-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Исполнитель</label
               >
+                Исполнитель
+              </label>
             </div>
           </li>
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="wtrtime-checkbox"
@@ -94,12 +93,13 @@ setInterval(() => {
               <label
                 for="wtrtime-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Время прослушивания</label
               >
+                Время прослушивания
+              </label>
             </div>
           </li>
           <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] bg-[#303235] transition-all rounded-lg"
+            class="w-full border-gray-600 hover:bg-[#2c2d30] bg-[#303235] transition-all rounded-lg"
           >
             <div class="flex items-center ps-3">
               <input
@@ -113,14 +113,14 @@ setInterval(() => {
               />
               <label
                 for="wtrlink-checkbox"
+                title="Появится в YouCord Beta1.0"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-400"
-                >Ссылка на трек</label
               >
+                Ссылка на трек
+              </label>
             </div>
           </li>
-          <li
-            class="w-full border-brounded-t-lg border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg"
-          >
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input
                 id="wtrimage-checkbox"
@@ -134,17 +134,12 @@ setInterval(() => {
               <label
                 for="wtrimage-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-                >Обложка трека</label
               >
+                Обложка трека
+              </label>
             </div>
           </li>
         </ul>
-        <!-- <button 
-          type="button"
-          class="bg-[#333538] w-full border-l border-b border-r rounded-b-lg border-gray-600 text-gray-300 font-medium text-sm text-center py-2 hover:bg-[#2c2d30]"
-        >
-          Сохранить скрипт
-        </button> -->
       </div>
       <div class="flex flex-col">
         <div
@@ -185,7 +180,8 @@ setInterval(() => {
                         src="../assets/rockstar.jpg"
                         alt="BTMC Reacts to “a long overdue lazer update”"
                         style="max-width: 60px; min-height: 60px; border-radius: inherit"
-                    /></foreignObject>
+                      />
+                    </foreignObject>
                   </svg>
                   <div
                     :ref="(el) => emit('add-tooltip-content', el)"
@@ -220,6 +216,7 @@ setInterval(() => {
               <div class="overflow-hidden flex flex-col self-center gap-1 w-full">
                 <div>
                   <div
+                    v-show="config.title"
                     class="text-[14px] leading-tight font-semibold"
                     data-text-variant="heading-sm/semibold"
                     style="color: var(--text-normal)"
@@ -227,6 +224,7 @@ setInterval(() => {
                     Rockstar
                   </div>
                   <div
+                    v-show="config.author"
                     class="text-[12px] leading-tight font-normal text-[#535464] whitespace-nowrap text-ellipsis relative outline-0"
                     data-text-variant="text-xs/normal"
                     style="color: var(--text-normal)"
@@ -234,7 +232,7 @@ setInterval(() => {
                     BoyWithUke
                   </div>
                 </div>
-                <div class="flex items-center gap-2 outline-0 m-0 p-0">
+                <div v-show="config.duration" class="flex items-center gap-2 outline-0 m-0 p-0">
                   <div class="text-sm text-gray-300 font-normal line leading-tight font-code">
                     {{ yamusic_time }}
                   </div>

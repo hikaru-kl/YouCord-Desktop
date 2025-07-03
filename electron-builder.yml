@@ -1,8 +1,10 @@
-appId: com.electron.app
-productName: youcord-desktop
+appId: com.youcord.app
+productName: YouCord
 directories:
   buildResources: build
 files:
+  - 'resources/**'
+  - 'dist/**/*'
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
@@ -11,7 +13,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: youcord-desktop
+  executableName: YouCord
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -39,4 +41,4 @@ appImage:
 npmRebuild: false
 publish:
   provider: generic
-  url: https://example.com/auto-updates
+  url: https://github.com/hikaru-kl/YouCord-Desktop

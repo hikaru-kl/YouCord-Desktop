@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, shallowRef } from 'vue'
+import { onMounted, shallowRef, ref, watch, nextTick } from 'vue'
 import { Tooltip, Dropdown } from 'flowbite'
 
 import YoutubeSettings from './components/YoutubeSettings.vue'
@@ -8,39 +8,110 @@ import YamusicSettings from './components/YamusicSettings.vue'
 import YamusicWebSettings from './components/YamusicWebSettings.vue'
 import MenuSettings from './components/MenuSettings.vue'
 
-const tooltipContents = []
-const tooltipButtons = []
-const yamusicButton = null
-const yamusicContent = null
+// Reactive tooltip element arrays
+const tooltipContents = ref([])
+const tooltipButtons = ref([])
+
+const yamusicButton = ref(null)
+const yamusicContent = ref(null)
 
 let currentComponent = shallowRef('menu:settings')
 
+// Swap content and re-initialize tooltips
 const swapContent = (component) => {
   window.electron.ipcRenderer.send('askUpdate')
   currentComponent.value = component
 }
 
+// Init tooltips and dropdown once everything is mounted
 onMounted(() => {
-  tooltipContents.forEach((el, i) => {
-    new Tooltip(
-      el,
-      tooltipButtons[i],
-      { placement: 'bottom', triggerType: 'hover' },
-      { id: `tooltip-${i}`, override: true }
-    )
-  })
-  new Dropdown(
-    yamusicContent,
-    yamusicButton,
-    {
-      delay: 0
-    },
-    {
-      id: 'dropdownMenu',
-      override: true
-    }
-  )
+  initializeDropdown()
 })
+
+watch(
+  () => tooltipContents.value.length,
+  (newVal) => {
+    console.log(`Updated tooltipContents to ${newVal}`)
+  }
+)
+
+const initializedTooltips = new WeakMap()
+watch(
+  [tooltipContents, tooltipButtons],
+  async () => {
+    await nextTick()
+
+    for (let i = 0; i < tooltipContents.value.length; i++) {
+      const contentEl = tooltipContents.value[i]
+      const buttonEl = tooltipButtons.value[i]
+
+      // Если один из элементов отсутствует — пропускаем
+      if (!contentEl || !buttonEl) continue
+
+      // Если уже был создан тултип — пропускаем
+      if (initializedTooltips.has(contentEl)) continue
+
+      // Инициализируем тултип
+      const tooltip = new Tooltip(contentEl, buttonEl, {
+        placement: 'bottom',
+        triggerType: 'hover'
+      })
+
+      // Помечаем как инициализированный
+      initializedTooltips.set(contentEl, tooltip)
+    }
+  },
+  { deep: true }
+)
+
+// Helper: Initialize Yandex.Music dropdown
+const initializeDropdown = () => {
+  console.log('init dropdown')
+
+  if (yamusicButton.value && yamusicContent.value) {
+    new Dropdown(
+      yamusicContent.value,
+      yamusicButton.value,
+      {
+        delay: 0
+      },
+      {
+        id: 'dropdownMenu',
+        override: true
+      }
+    )
+  }
+}
+
+// Clear arrays before switching to a new component to avoid duplicates
+watch(currentComponent, () => {
+  tooltipContents.value = []
+  tooltipButtons.value = []
+})
+
+const sparks = ref([])
+
+function triggerSparks() {
+  sparks.value = []
+  for (let i = 0; i < 8; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const distance = 100 + Math.random() * 20
+    sparks.value.push({
+      x: Math.cos(angle) * distance,
+      y: Math.sin(angle) * distance
+    })
+  }
+
+  setTimeout(() => {
+    sparks.value = []
+  }, 500)
+}
+function handleDelayedRedirect() {
+  triggerSparks()
+  setTimeout(() => {
+    window.open('https://boosty.to/youcord', '_blank')
+  }, 1000)
+}
 </script>
 <template>
   <div>
@@ -49,14 +120,21 @@ onMounted(() => {
         <div class="relative gap-x-2 w-full py-2 px-2 rounded-full flex bg-[#323232]">
           <div class="flex align-middle items-center">
             <img
-              :ref="(el) => tooltipButtons.push(el)"
+              :ref="
+                (el) =>
+                  !tooltipButtons.includes(el)
+                    ? !tooltipButtons.includes(el)
+                      ? tooltipButtons.push(el)
+                      : {}
+                    : {}
+              "
               class="hover:-translate-y-1 transition-all hover:cursor-pointer self-center"
               src="./assets/spotify-icon.svg"
               alt="Spotify"
               @click="swapContent('spotify')"
             />
             <div
-              :ref="(el) => tooltipContents.push(el)"
+              :ref="(el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})"
               role="tooltip"
               class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-[#575757] rounded-lg shadow-sm opacity-0 tooltip"
             >
@@ -66,7 +144,7 @@ onMounted(() => {
           </div>
           <div class="align-middle flex">
             <img
-              :ref="(el) => tooltipButtons.push(el)"
+              :ref="(el) => (!tooltipButtons.includes(el) ? tooltipButtons.push(el) : {})"
               type="button"
               src="./assets/youtube-new.svg"
               class="hover:-translate-y-1 transition-all w-16 self-center hover:cursor-pointer"
@@ -74,7 +152,7 @@ onMounted(() => {
               @click="swapContent('youtube')"
             />
             <div
-              :ref="(el) => tooltipContents.push(el)"
+              :ref="(el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})"
               role="tooltip"
               class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-[#575757] rounded-lg shadow-sm opacity-0 tooltip"
             >
@@ -131,8 +209,15 @@ onMounted(() => {
         >
           <button
             type="button"
-            class="bg-[#484848] text-[#BCBCBC] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
-            @click="swapContent('menu:settings')"
+            :class="[
+              'bg-[#484848] text-[#BCBCBC] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all',
+              currentComponent === 'menu:settings' ? 'bg-[#6A6A6A] text-white' : ''
+            ]"
+            @click="
+              () => {
+                swapContent('menu:settings')
+              }
+            "
           >
             Настройки
           </button>
@@ -149,53 +234,87 @@ onMounted(() => {
             class="cursor-not-allowed bg-[#3b3b3b] text-[#BCBCBC] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
             title="Появится в YouCord Beta1.0"
           >
-            Гайды
+            Статистика
           </button>
           <button
             type="button"
             class="cursor-not-allowed bg-[#3b3b3b] text-[#BCBCBC] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
             title="Появится в YouCord Beta1.0"
           >
-            Статистика
+            Помощь
           </button>
-          <button
+          <a
             type="button"
-            class="bg-gradient-to-r from-indigo-400 via-teal-500 to-indigo-700 text-[#f7f7f7] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
+            href="https://boosty.to/youcord"
+            target="_blank"
+            class="text-center bg-gradient-to-r from-indigo-400 via-teal-500 to-indigo-700 text-[#f7f7f7] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
+            @click.prevent="handleDelayedRedirect"
           >
             Донат
-          </button>
+            <span
+              v-for="(spark, index) in sparks"
+              :key="index"
+              class="absolute w-1 h-1 bg-yellow-400 rounded-full animate-sparkle pointer-events-none"
+              :style="{
+                top: '50%',
+                left: '50%',
+                '--x': spark.x + 'px',
+                '--y': spark.y + 'px'
+              }"
+            />
+          </a>
           <div
             class="flex justify-between flex-row w-full max-h-fit text-center mt-auto self-center text-[#868686]"
           >
-            <div class="text-center justify-self-center flex">YouCord Alpha1.0</div>
+            <div class="text-center justify-self-center flex">YouCord Pre-Beta</div>
             <div class="text-center justify-self-center flex">by hikaru_kl</div>
           </div>
         </div>
         <div class="w-full bg-[#323232] rounded-[20px] p-3">
-          <YoutubeSettings
-            v-show="currentComponent == 'youtube'"
-            @add-tooltip-button="(el) => tooltipButtons.push(el)"
-            @add-tooltip-content="(el) => tooltipContents.push(el)"
-          />
           <SpotifySettings
             v-show="currentComponent == 'spotify'"
-            @add-tooltip-button="(el) => tooltipButtons.push(el)"
-            @add-tooltip-content="(el) => tooltipContents.push(el)"
+            @add-tooltip-button="
+              (el) => (!tooltipButtons.includes(el) ? tooltipButtons.push(el) : {})
+            "
+            @add-tooltip-content="
+              (el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})
+            "
+          />
+          <YoutubeSettings
+            v-show="currentComponent == 'youtube'"
+            @add-tooltip-button="
+              (el) => (!tooltipButtons.includes(el) ? tooltipButtons.push(el) : {})
+            "
+            @add-tooltip-content="
+              (el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})
+            "
           />
           <YamusicSettings
             v-show="currentComponent == 'yamusic:desktop'"
-            @add-tooltip-button="(el) => tooltipButtons.push(el)"
-            @add-tooltip-content="(el) => tooltipContents.push(el)"
+            @add-tooltip-button="
+              (el) => (!tooltipButtons.includes(el) ? tooltipButtons.push(el) : {})
+            "
+            @add-tooltip-content="
+              (el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})
+            "
           />
           <YamusicWebSettings
             v-show="currentComponent == 'yamusic:web'"
-            @add-tooltip-button="(el) => tooltipButtons.push(el)"
-            @add-tooltip-content="(el) => tooltipContents.push(el)"
+            @add-tooltip-button="
+              (el) => (!tooltipButtons.includes(el) ? tooltipButtons.push(el) : {})
+            "
+            @add-tooltip-content="
+              (el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})
+            "
           />
           <MenuSettings
             v-show="currentComponent == 'menu:settings'"
-            @add-tooltip-button="(el) => tooltipButtons.push(el)"
-            @add-tooltip-content="(el) => tooltipContents.push(el)"
+            @add-tooltip-button="
+              (el) => (!tooltipButtons.includes(el) ? tooltipButtons.push(el) : {})
+            "
+            @add-tooltip-content="
+              (el) => (!tooltipContents.includes(el) ? tooltipContents.push(el) : {})
+            "
           />
         </div>
       </div>

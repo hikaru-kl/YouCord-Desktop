@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 const services = [
   { service: 'spotify', title: 'Spotify', priority: 1 },
   { service: 'youtube', title: 'Youtube', priority: 2 },
@@ -37,6 +38,19 @@ window.electron.ipcRenderer.on('setSettings', (e, data) => {
     if (el) el.checked = value
   }
 })
+
+const isClicked = ref(false)
+
+function handleClick() {
+  // вызов функции сохранения
+  saveChanges()
+
+  // визуальный отклик
+  isClicked.value = true
+  setTimeout(() => {
+    isClicked.value = false
+  }, 1200)
+}
 </script>
 
 <template>
@@ -109,8 +123,14 @@ window.electron.ipcRenderer.on('setSettings', (e, data) => {
             </div>
           </div>
         </div>
-        <button class="hover:bg-[#44474b] rounded-lg transition-all" @click="saveChanges">
-          Сохранить
+        <button
+          :class="[
+            'rounded-lg transition-all px-4 py-2 text-white',
+            isClicked ? 'bg-green-600 scale-95' : 'bg-[#3a3d40] hover:bg-[#44474b]'
+          ]"
+          @click="handleClick"
+        >
+          {{ isClicked ? 'Сохранено' : 'Сохранить' }}
         </button>
       </div>
       <div class="flex flex-col py-2 gap-y-5">
