@@ -86,7 +86,7 @@ const timer = setInterval(() => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="strtitle-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -107,7 +107,7 @@ const timer = setInterval(() => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="strartist-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -126,7 +126,7 @@ const timer = setInterval(() => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="strtime-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -143,7 +143,7 @@ const timer = setInterval(() => {
                 type="checkbox"
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="strlink-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -161,7 +161,7 @@ const timer = setInterval(() => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="strimage-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -178,7 +178,7 @@ const timer = setInterval(() => {
                 type="checkbox"
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="strlyrics-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -228,7 +228,7 @@ const timer = setInterval(() => {
                         :src="config.image ? albumImg : youcordImg"
                         alt="BTMC Reacts to “a long overdue lazer update”"
                         style="max-width: 60px; min-height: 60px; border-radius: inherit"
-                      >
+                      />
                     </foreignObject>
                   </svg>
                   <div
@@ -250,7 +250,7 @@ const timer = setInterval(() => {
                     class="contentImage_dc67b6 contentImage_fa854f -indent-[9999px] object-cover bg-black"
                     alt="Spotify icon"
                     style="max-width: 24px; min-height: 24px; border-radius: inherit"
-                  >
+                  />
                   <div
                     :ref="(el) => emit('add-tooltip-content', el)"
                     role="tooltip"

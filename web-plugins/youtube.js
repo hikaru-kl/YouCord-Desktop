@@ -87,7 +87,9 @@
               const thumbnailElement = document.querySelector(
                 'yt-img-shadow.ytd-video-owner-renderer img'
               )
-              const isPaused = document.querySelector("#movie_player > div.html5-video-container > video").paused
+              const isPaused = document.querySelector(
+                '#movie_player > div.html5-video-container > video'
+              ).paused
 
               data = {
                 service: 'youtube',

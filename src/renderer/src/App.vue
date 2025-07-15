@@ -232,14 +232,14 @@ function handleDelayedRedirect() {
           <button
             type="button"
             class="cursor-not-allowed bg-[#3b3b3b] text-[#BCBCBC] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
-            title="Появится в YouCord Beta1.0"
+            title="Появится в YouCord 1.0"
           >
             Статистика
           </button>
           <button
             type="button"
             class="cursor-not-allowed bg-[#3b3b3b] text-[#BCBCBC] rounded-[20px] py-[10px] tracking-widest hover:translate-x-1 transition-all"
-            title="Появится в YouCord Beta1.0"
+            title="Появится в YouCord 1.0"
           >
             Помощь
           </button>
@@ -266,7 +266,7 @@ function handleDelayedRedirect() {
           <div
             class="flex justify-between flex-row w-full max-h-fit text-center mt-auto self-center text-[#868686]"
           >
-            <div class="text-center justify-self-center flex">YouCord Pre-Beta</div>
+            <div class="text-center justify-self-center flex">YouCord v1.0.0-beta.1</div>
             <div class="text-center justify-self-center flex">by hikaru_kl</div>
           </div>
         </div>

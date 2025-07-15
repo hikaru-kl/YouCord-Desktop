@@ -3,7 +3,9 @@ productName: YouCord
 directories:
   buildResources: build
 files:
-  - 'resources/**'
+  - 'web-plugins/**/*'
+  - 'resources/yaMusicScript.js'
+  - 'resources/**/*'
   - 'dist/**/*'
   - '!**/.vscode/*'
   - '!src/*'
@@ -12,6 +14,9 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
 asarUnpack:
   - resources/**
+  - resources/yaMusicScript.js
+  - web-plugins/**
+
 win:
   executableName: YouCord
 nsis:

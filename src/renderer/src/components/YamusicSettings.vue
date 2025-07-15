@@ -14,6 +14,7 @@ let config = reactive({
   duration: true,
   link: true,
   image: true,
+  lyrics: true,
   app_path: path.value
 })
 
@@ -252,6 +253,29 @@ const timer = setInterval(() => {
               </label>
             </div>
           </li>
+
+
+          <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
+            <div class="flex items-center ps-3">
+              <input
+                id="trimage-checkbox"
+                v-model="config.lyrics"
+                type="checkbox"
+                value="link"
+                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
+                checked
+                @change="saveChanges()"
+              />
+              <label
+                for="trimage-checkbox"
+                class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
+              >
+                Лирика
+              </label>
+            </div>
+          </li>
+
+
           <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
             <div class="flex items-center ps-3">
               <input

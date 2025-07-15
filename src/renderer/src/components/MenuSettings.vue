@@ -1,15 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 const services = [
   { service: 'spotify', title: 'Spotify', priority: 1 },
   { service: 'youtube', title: 'Youtube', priority: 2 },
   { service: 'yamusic', title: 'Yandex music', priority: 3 }
 ]
 
-let settings = {
+let settings = ref({
   autoLaunch: false,
+  launchInTray: false,
   exitTray: false
-}
+})
+
+watch(
+  () => settings.value.autoLaunch,
+  (newValue) => {
+    if (!newValue) {
+      settings.value.launchInTray = false
+      window.electron.ipcRenderer.send('changeSettings', {
+        name: 'launchInTray',
+        value: settings.value.launchInTray
+      })
+    }
+  }
+)
 
 const saveChanges = () => {
   let priorities = new Set()
@@ -24,7 +38,10 @@ const saveChanges = () => {
   window.electron.ipcRenderer.send('changePriority', { services: services })
 }
 const changeSettings = (name) => {
-  window.electron.ipcRenderer.send('changeSettings', { name: name, value: settings[name] })
+  if (name === 'launchInTray' && !settings.value.autoLaunch) {
+    settings.value.launchInTray = false
+  }
+  window.electron.ipcRenderer.send('changeSettings', { name: name, value: settings.value[name] })
 }
 window.electron.ipcRenderer.on('setSettings', (e, data) => {
   console.log(data)
@@ -32,8 +49,8 @@ window.electron.ipcRenderer.on('setSettings', (e, data) => {
     el.priority = data.services[el.service].priority
     document.querySelector('#counter-input-' + services.indexOf(el)).value = el.priority
   })
-  settings = data.settings
-  for (const [key, value] of Object.entries(settings)) {
+  settings.value = data.settings
+  for (const [key, value] of Object.entries(settings.value)) {
     let el = document.querySelector(`#${key}`)
     if (el) el.checked = value
   }
@@ -146,6 +163,20 @@ function handleClick() {
             class="relative w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all border-gray-600 peer-checked:bg-blue-600"
           />
           <span class="ms-3 text-sm font-medium text-gray-300">Открывать YouCord при загрузке</span>
+        </label>
+        <label class="inline-flex items-center cursor-pointer">
+          <input
+            id="launchInTray"
+            v-model="settings.launchInTray"
+            type="checkbox"
+            class="sr-only peer"
+            :disabled="!settings.autoLaunch"
+            @change="changeSettings('launchInTray')"
+          />
+          <div
+            class="relative w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-800 rounded-full peer bg-gray-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all border-gray-600 peer-checked:bg-blue-600 peer-disabled:opacity-40"
+          />
+          <span class="ms-3 text-sm font-medium text-gray-300">Скрытый автозапуск</span>
         </label>
         <label class="inline-flex items-center cursor-pointer">
           <input

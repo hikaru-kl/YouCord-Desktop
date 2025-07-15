@@ -24,42 +24,51 @@
     })
   }
   function parseTrackData() {
-    const mobileRoot = document.querySelector('.PlayerBarMobile_root__cdKy_');
-    const desktopRoot = document.querySelector('.PlayerBarDesktopWithBackgroundProgressBar_root__bpmwN');
+    const mobileRoot = document.querySelector('.PlayerBarMobile_root__cdKy_')
+    const desktopRoot = document.querySelector(
+      '.PlayerBarDesktopWithBackgroundProgressBar_root__bpmwN'
+    )
 
-    const player = mobileRoot || desktopRoot;
+    const player = mobileRoot || desktopRoot
     if (!player) {
-      console.log('Player not found');
-      return null;
+      console.log('Player not found')
+      return null
     }
     const title =
-      player.querySelector('.Meta_title__GGBnH, .Meta_title__qY9_p')?.textContent?.trim() || 'Не найден';
-    const authorsContainer = player.querySelector('.SeparatedArtists_root_variant_breakAll__34YbW');
-    let authorsString = '';
+      player.querySelector('.Meta_title__GGBnH, .Meta_title__qY9_p')?.textContent?.trim() ||
+      'Не найден'
+    const authorsContainer = player.querySelector('.SeparatedArtists_root_variant_breakAll__34YbW')
+    let authorsString = ''
 
     if (authorsContainer) {
       const authors = Array.from(authorsContainer.querySelectorAll('a span'))
-        .map(el => el.textContent.trim())
-        .filter(Boolean);
-      authorsString = authors.join(', ');
+        .map((el) => el.textContent.trim())
+        .filter(Boolean)
+      authorsString = authors.join(', ')
     } else {
-      const singleAuthor = player.querySelector('.Meta_artistCaption__JESZi, .Meta_artistCaption__gAAQc')?.textContent?.trim();
-      if (singleAuthor) authorsString = singleAuthor;
+      const singleAuthor = player
+        .querySelector('.Meta_artistCaption__JESZi, .Meta_artistCaption__gAAQc')
+        ?.textContent?.trim()
+      if (singleAuthor) authorsString = singleAuthor
     }
-    let cover =
-      desktopRoot ? player.querySelector('img.qQ7GQU14EkggPBC6jdeS.fosYvyLDok3Kjj9OWmxG.PlayerBarDesktopWithBackgroundProgressBar_cover__MKmEt')?.src || 'Не найдена' : (player.querySelector('img.PlayerBarMobile_cover__pnJd1, img.PlayerBarDesktop_cover__u5jvK')?.src || 'Не найдена');
-    cover = cover.replace(/\d+x\d+/, '400x400');
+    let cover = desktopRoot
+      ? player.querySelector(
+          'img.qQ7GQU14EkggPBC6jdeS.fosYvyLDok3Kjj9OWmxG.PlayerBarDesktopWithBackgroundProgressBar_cover__MKmEt'
+        )?.src || 'Не найдена'
+      : player.querySelector('img.PlayerBarMobile_cover__pnJd1, img.PlayerBarDesktop_cover__u5jvK')
+          ?.src || 'Не найдена'
+    cover = cover.replace(/\d+x\d+/, '400x400')
 
     const selector = desktopRoot
-      ? "button.BaseSonataControlsDesktop_sonataButton__GbwFt span > svg > use"
-      : "span.JjlbHZ4FaP9EAcR_1DxF > svg > use";
-    const index = desktopRoot ? 2 : 1;
-    const useElement = (desktopRoot || player).querySelectorAll(selector)[index];
-    const isPaused = useElement.getAttribute('xlink:href').includes('play');
+      ? 'button.BaseSonataControlsDesktop_sonataButton__GbwFt span > svg > use'
+      : 'span.JjlbHZ4FaP9EAcR_1DxF > svg > use'
+    const index = desktopRoot ? 2 : 1
+    const useElement = (desktopRoot || player).querySelectorAll(selector)[index]
+    const isPaused = useElement.getAttribute('xlink:href').includes('play')
 
-    const slider = player.querySelector('input[type="range"]');
-    const currentTime = parseFloat(slider?.value || 0);
-    const duration = parseFloat(slider?.max || 0);
+    const slider = player.querySelector('input[type="range"]')
+    const currentTime = parseFloat(slider?.value || 0)
+    const duration = parseFloat(slider?.max || 0)
 
     const info = {
       title,
@@ -68,8 +77,8 @@
       currentTime,
       duration,
       cover
-    };
-    console.log(info);
+    }
+    console.log(info)
 
     return info
   }
@@ -87,11 +96,9 @@
 
       interval = setInterval(() => {
         try {
-          
           let trackData = parseTrackData()
-          
-          if (!trackData)
-            return
+
+          if (!trackData) return
 
           data = {
             service: 'yamusic',

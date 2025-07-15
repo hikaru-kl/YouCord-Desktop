@@ -68,11 +68,12 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="vauthor-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
-              >Автор видео</label>
+                >Автор видео</label
+              >
             </div>
           </li>
           <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
@@ -85,12 +86,13 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="vduration-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
               >
-                Длительность просмотра</label>
+                Длительность просмотра</label
+              >
             </div>
           </li>
           <li class="w-full border-gray-600 hover:bg-[#2c2d30] transition-all rounded-lg">
@@ -103,7 +105,7 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                 class="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-700 focus:ring-offset-gray-700 focus:ring-2 bg-gray-600 border-gray-500"
                 checked
                 @change="saveChanges()"
-              >
+              />
               <label
                 for="vlink-checkbox"
                 class="w-full py-3 ms-2 text-sm font-medium text-gray-300"
@@ -152,7 +154,7 @@ window.electron.ipcRenderer.on('setParams', (e, data) => {
                       src="../assets/youtube-preview.png"
                       alt="BTMC Reacts to “a long overdue lazer update”"
                       style="max-width: 60px; min-height: 60px; border-radius: inherit"
-                    >
+                    />
                   </foreignObject>
                 </svg>
                 <div
